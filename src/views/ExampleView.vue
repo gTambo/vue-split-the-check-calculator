@@ -1,6 +1,11 @@
+<script setup lang="ts">
+    import { ref } from "vue";
+    const msg = ref("Here's another page")
+</script>
+
 <template>
     <div class="example">
-        <h1>Here's another page</h1>
+        <h1>{{ msg }}</h1>
     </div>
 </template>
 
