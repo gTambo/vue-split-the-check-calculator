@@ -7,6 +7,18 @@
   <div>
     <h1>This is a blank page</h1>
     <p class="text">{{ msg.toUpperCase() }}</p>
+    <form action="submit">
+      <label for="payer-1">First Payer: </label>
+      <input id="payer-1" type="number" />
+      <label for="payer-2">Second Payer: </label>
+      <input id="payer-2" type="number" />
+      <label for="payer-3">Third Payer: </label>
+      <input id="payer-3" type="number" />
+      <label for="payer-4">Fourth Payer: </label>
+      <input id="payer-4" type="number" />
+      <button type="submit">Calculate</button>
+    </form>
+    
   </div>
 </template>
 
