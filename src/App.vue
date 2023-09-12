@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, reactive } from 'vue';
+  import { ref } from 'vue';
   const msg = ref('enter your percentages')
   const percentage1 = ref(25)
   const percentage2 = ref(25)
@@ -11,13 +11,13 @@
   const payment3 = ref()
   const payment4 = ref()
 
-  function verifyPercentages(num1: number, num2: number, num3: number, num4: number): boolean {
-    if((num1 + num2 + num3 + num4) == 100) return true
+  function verifyPercentages(percentages: Array<number>): boolean {
+    if(percentages.reduce((x, y) => x + y) == 100) return true
     return false
   }
   function calculate() {
     // check percentages
-    if(verifyPercentages(percentage1.value, percentage2.value, percentage3.value, percentage4.value)){
+    if(verifyPercentages([percentage1.value, percentage2.value, percentage3.value, percentage4.value])){
       payment1.value = total.value * percentage1.value / 100
       payment2.value = total.value * percentage2.value / 100
       payment3.value = total.value * percentage3.value / 100
