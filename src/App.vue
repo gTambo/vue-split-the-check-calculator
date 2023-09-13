@@ -1,6 +1,8 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, reactive } from 'vue';
   const msg = ref('enter your percentages')
+  const payers = ref(0)
+
   const percentage1 = ref(25)
   const percentage2 = ref(25)
   const percentage3 = ref(25)
@@ -11,6 +13,17 @@
   const payment3 = ref()
   const payment4 = ref()
 
+  const percentageList = ref(new Array<{id: number, name: String}>)
+  function createInputs() {
+    // something here
+    for(let i = 0; i < payers.value; i++){
+      // create percentage ref and add to percentage list
+      let newName = 'percentage' + (i + 1).toString()
+      let payer = { id: 1, name: newName }
+      percentageList.value.push(payer)
+      // create payment ref and add to payment list
+    }
+  }
   function verifyPercentages(percentages: Array<number>): boolean {
     if(percentages.reduce((x, y) => x + y) == 100) return true
     return false
@@ -31,19 +44,26 @@
 <template>
   <div>
     <h1>Payment Calculator</h1>
+
+    <form action="submit" @submit.prevent="createInputs">
+      <label for="payers">number of payers </label>
+      <input v-model="payers" id="payers" type="number">
+    </form>
     
     <form action="submit" @submit.prevent="calculate()">
       <label for="total-amount" class="text">Enter the total: </label>
       $<input v-model="total" id="total-amount" type="number">
       <p class="text">{{ msg }}</p>
-      <label for="percentage-1">First payer: $</label>
+      
+      <div v-for="payer in percentageList" :key="payer.id">{{ payer.name }}</div>
+      <!-- <label for="percentage-1">First payer: $</label>
       <input v-model="percentage1" id="percentage-1" type="number" min="0" max="100" step="5" />
       <label for="percentage-2">Second payer: $</label>
       <input v-model="percentage2" id="percentage-2" type="number" min="0" max="100" step="5" />
       <label for="percentage-3">Third payer: $</label>
       <input v-model="percentage3" id="percentage-3" type="number" min="0" max="100" step="5" />
       <label for="percentage-4">Fourth payer: </label>
-      <input v-model="percentage4" id="percentage-4" type="number" min="0" max="100" step="5" />
+      <input v-model="percentage4" id="percentage-4" type="number" min="0" max="100" step="5" /> -->
       <button type="submit">Calculate</button>
     </form>
     
