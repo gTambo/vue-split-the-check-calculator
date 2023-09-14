@@ -1,40 +1,46 @@
 <script setup lang="ts">
-  import { ref, reactive } from 'vue';
+  import { ref, nextTick } from 'vue';
   const msg = ref('enter your percentages')
   const payers = ref(0)
-
-  const percentage1 = ref(25)
-  const percentage2 = ref(25)
-  const percentage3 = ref(25)
-  const percentage4 = ref(25)
   const total = ref(0)
-  const payment1 = ref()
-  const payment2 = ref()
-  const payment3 = ref()
-  const payment4 = ref()
 
-  const percentageList = ref(new Array<{id: number, name: String}>)
-  function createInputs() {
-    // something here
-    for(let i = 0; i < payers.value; i++){
-      // create percentage ref and add to percentage list
-      let newName = 'percentage' + (i + 1).toString()
-      let payer = { id: 1, name: newName }
-      percentageList.value.push(payer)
-      // create payment ref and add to payment list
+  const percentageList = ref(new Array<{id: String, name: String, percent: number, payment: number}>)
+  
+  function clearList(list: Array<any>) {
+    if(list.length) {
+      let length = list.length
+      for(let i = 0; i < length; i++) {
+        list.pop();
+      }
     }
   }
+  async function createInputs() {
+
+    if(percentageList.value.length != payers.value) {
+      clearList(percentageList.value)
+      for(let i = 0; i < payers.value; i++) {
+        // create percentage ref and add to percentage list
+        const id = (i + 1).toString()
+        let newName = 'percentage' + id
+        let payer = { id: id, name: newName, percent: 0, payment: 0 }
+
+        percentageList.value.push(payer)
+        
+      }
+    }
+    payers.value = 0
+    await nextTick()
+    
+  }
+
   function verifyPercentages(percentages: Array<number>): boolean {
-    if(percentages.reduce((x, y) => x + y) == 100) return true
+    if(percentages.reduce((x, y) => x + y, 0) == 100) return true
     return false
   }
+
   function calculate() {
-    // check percentages
-    if(verifyPercentages([percentage1.value, percentage2.value, percentage3.value, percentage4.value])){
-      payment1.value = total.value * percentage1.value / 100
-      payment2.value = total.value * percentage2.value / 100
-      payment3.value = total.value * percentage3.value / 100
-      payment4.value = total.value * percentage4.value / 100
+    if(verifyPercentages(percentageList.value.map(payer => payer.percent))){
+      percentageList.value.map(payer => (payer.payment = total.value * payer.percent / 100))
     }
     else {alert("percentages must total to 100")}
 
@@ -48,6 +54,7 @@
     <form action="submit" @submit.prevent="createInputs">
       <label for="payers">number of payers </label>
       <input v-model="payers" id="payers" type="number">
+      <button type="submit">Set Payers</button>
     </form>
     
     <form action="submit" @submit.prevent="calculate()">
@@ -55,22 +62,16 @@
       $<input v-model="total" id="total-amount" type="number">
       <p class="text">{{ msg }}</p>
       
-      <div v-for="payer in percentageList" :key="payer.id">{{ payer.name }}</div>
-      <!-- <label for="percentage-1">First payer: $</label>
-      <input v-model="percentage1" id="percentage-1" type="number" min="0" max="100" step="5" />
-      <label for="percentage-2">Second payer: $</label>
-      <input v-model="percentage2" id="percentage-2" type="number" min="0" max="100" step="5" />
-      <label for="percentage-3">Third payer: $</label>
-      <input v-model="percentage3" id="percentage-3" type="number" min="0" max="100" step="5" />
-      <label for="percentage-4">Fourth payer: </label>
-      <input v-model="percentage4" id="percentage-4" type="number" min="0" max="100" step="5" /> -->
+      <div v-if="percentageList.length">
+        <div v-for="payer in percentageList" :key="'payer' + payer.id">
+        <label :for="'percent' + payer.id">{{ payer.name }} $</label>
+        <input v-model="payer.percent" :id="'percent' + payer.id" type="number" min="0" max="100" />
+        </div>
+      </div>
       <button type="submit">Calculate</button>
     </form>
     
-    <p class="text">1: ${{ payment1 }}, <br/>
-                 2: ${{ payment2 }}, <br/>
-                 3: ${{ payment3 }}, <br/>
-                 4: ${{ payment4 }}</p>
+    <p class="text" v-for="payer in percentageList" :key="'total' + payer.id">1: ${{ payer.payment }}, <br/></p>
   </div>
 </template>
 
