@@ -53,25 +53,25 @@
 
     <form action="submit" @submit.prevent="createInputs">
       <label for="payers">number of payers </label>
-      <input v-model="payers" id="payers" type="number">
+      <input v-model="payers" id="payers" type="number" >
       <button type="submit">Set Payers</button>
     </form>
     
     <form action="submit" @submit.prevent="calculate()">
       <label for="total-amount" class="text">Enter the total: </label>
-      $<input v-model="total" id="total-amount" type="number">
+      $<input v-model="total" id="total-amount" type="number" min=".01" step=".01" max="1000000">
       <p class="text">{{ msg }}</p>
       
       <div v-if="percentageList.length">
         <div v-for="payer in percentageList" :key="'payer' + payer.id">
         <label :for="'percent' + payer.id">{{ payer.name }} $</label>
-        <input v-model="payer.percent" :id="'percent' + payer.id" type="number" min="0" max="100" />
+        <input v-model="payer.percent" :id="'percent' + payer.id" type="number" min="0.01" max="100" step=".01"/>
         </div>
       </div>
       <button type="submit">Calculate</button>
     </form>
     
-    <p class="text" v-for="payer in percentageList" :key="'total' + payer.id">1: ${{ payer.payment }}, <br/></p>
+    <p class="text" v-for="payer in percentageList" :key="'total' + payer.id">1: ${{ payer.payment.toFixed(2) }}, <br/></p>
   </div>
 </template>
 
