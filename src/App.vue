@@ -3,6 +3,11 @@
   const msg = ref('enter your percentages')
   const payers = ref(0)
   const total = ref(0)
+  const id = ref(0)
+  const payerName = ref('')
+  // function incrementId() {
+  //   id.value++
+  // }
 
   const percentageList = ref(new Array<{id: String, name: String, percent: number, payment: number}>)
   
@@ -16,20 +21,22 @@
   }
   async function createInputs() {
 
-    if(percentageList.value.length != payers.value) {
-      clearList(percentageList.value)
-      for(let i = 0; i < payers.value; i++) {
-        // create percentage ref and add to percentage list
-        const id = (i + 1).toString()
-        let newName = 'percentage' + id
-        let payer = { id: id, name: newName, percent: 0, payment: 0 }
+    percentageList.value.push({ id: id.value.toString(), name: payerName.value, percent: 0, payment: 0})
+    id.value++
+    // if(percentageList.value.length != payers.value) {
+    //   clearList(percentageList.value)
+    //   for(let i = 0; i < payers.value; i++) {
+    //     // create percentage ref and add to percentage list
+    //     const id = (i + 1).toString()
+    //     let newName = 'percentage' + id
+    //     let payer = { id: id, name: newName, percent: 0, payment: 0 }
 
-        percentageList.value.push(payer)
+    //     percentageList.value.push(payer)
         
-      }
-    }
-    payers.value = 0
-    await nextTick()
+    //   }
+    // }
+    // payers.value = 0
+    // await nextTick()
     
   }
 
@@ -52,9 +59,9 @@
     <h1>Payment Calculator</h1>
 
     <form action="submit" @submit.prevent="createInputs">
-      <label for="payers">number of payers </label>
-      <input v-model="payers" id="payers" type="number" >
-      <button type="submit">Set Payers</button>
+      <label for="payers">Name: </label>
+      <input v-model="payerName" id="payers" type="text" >
+      <button type="submit">Set as Payer</button>
     </form>
     
     <form action="submit" @submit.prevent="calculate()">
