@@ -23,6 +23,7 @@
 
     percentageList.value.push({ id: id.value.toString(), name: payerName.value, percent: 0, payment: 0})
     id.value++
+    payerName.value = ''
     // if(percentageList.value.length != payers.value) {
     //   clearList(percentageList.value)
     //   for(let i = 0; i < payers.value; i++) {
@@ -60,7 +61,7 @@
 
     <form action="submit" @submit.prevent="createInputs">
       <label for="payers">Name: </label>
-      <input v-model="payerName" id="payers" type="text" >
+      <input v-model="payerName" id="payers" type="text" placeholder="payer" >
       <button type="submit">Set as Payer</button>
     </form>
     
@@ -75,8 +76,10 @@
         <input v-model="payer.percent" :id="'percent' + payer.id" type="number" min="0.01" max="100" step=".01"/>
         </div>
       </div>
-      <button type="submit">Calculate</button>
+      <button type="submit">Calculate totals</button>
+      <button @click.prevent="clearList(percentageList)">Clear list of payers</button>
     </form>
+    
     
     <p class="text" v-for="payer in percentageList" :key="'total' + payer.id">1: ${{ payer.payment.toFixed(2) }}, <br/></p>
   </div>
