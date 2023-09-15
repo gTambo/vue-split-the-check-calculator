@@ -81,8 +81,8 @@ function calculate() {
       <p class="text">Enter your percentages</p>
       <div v-if="payersList.length">
         <div v-for="payer in payersList" :key="'payer' + payer.payerId">
-          <label :for="'percent' + payer.payerId">{{ payer.name }} $</label>
-          <input v-model="payer.percent" :id="'percent' + payer.payerId" type="number" min="0.01" max="100" step=".01" />
+          <label :for="'percent' + payer.payerId">{{ payer.name }}: </label>
+          <input v-model="payer.percent" :id="'percent' + payer.payerId" type="number" min="0.01" max="100" step=".01" />%
         </div>
       </div>
       <button type="submit">Calculate totals</button>
