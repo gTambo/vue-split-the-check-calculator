@@ -10,7 +10,7 @@ const itemNo = ref(1)
 const itemName = ref('')
 const itemCost = ref(0)
 const payersList = ref(new Array<payer>)
-const itemsList = ref(new Array<{ itemNo: String, itemName: String, cost: number } >)
+const itemsList = ref(new Array<{ itemNo: String, itemName: String, cost: number, payers: Array<payer> } >)
 
 // function increment(x: number) {
 //   return x++
@@ -53,7 +53,7 @@ function updateTotal(newItem: number) {
 }
 
 function addItem() {
-  itemsList.value.push({ itemNo: itemNo.value.toString(), itemName: itemName.value, cost: itemCost.value})
+  itemsList.value.push({ itemNo: itemNo.value.toString(), itemName: itemName.value, cost: itemCost.value, payers: payersList.value })
   updateTotal(itemCost.value)
   itemCost.value = 0
   itemName.value = ''
@@ -72,6 +72,7 @@ function calculate() {
   else { alert("percentages must total to 100") }
 
 }
+
 
 </script>
 
@@ -98,7 +99,7 @@ function calculate() {
       </div>
     </div>
     <p class="text" >Items total: ${{ total.toFixed(2) }}</p>
-    <form action="submit" @submit.prevent="calculate()">
+    <form action="submit" @submit.prevent="calculate">
       <p class="text">Enter your percentages</p>
       <div v-if="payersList.length">
         <div v-for="payer in payersList" :key="'payer' + payer.payerId">
@@ -110,6 +111,18 @@ function calculate() {
       <button @click.prevent="clearList(payersList)">Clear list of payers</button>
     </form>
 
+    <form action="submit" @submit.prevent="">
+      <h2>Items per person</h2>
+      <div v-if="payersList.length && itemsList.length">
+        <div v-for="payer in payersList" :key="payer.name.toLowerCase() + payer.payerId">
+          {{ payer.name }}
+          <li v-for="item in itemsList" :key="item.itemName.toLowerCase() + item.itemNo">
+            {{ item.itemName }} 
+            <input type="checkbox">
+          </li>
+        </div>
+      </div>
+    </form>
 
     <p class="text" v-for="payer in payersList" :key="'total' + payer.payerId">{{ payer.payerId }}: ${{ payer.payment.toFixed(2) }} </p>
   </div>
