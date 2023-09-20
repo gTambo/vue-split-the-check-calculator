@@ -1,7 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
-export type payer = { payerId: String, name: String, percent: number, payment: number }
+export type payer = { payerId: string, name: string, percent: number, payment: number, items: Array<string> }
+export type item = { itemNo: number, itemName: string, cost: number, payers?: Array<payer> | null }
+
+const payerItems = ref(new Array)
+
+function mapNewItems(map: Map<number, boolean>, keysArr: Array<any>, valuesArr: Array<any>) {
+  for(let i = 0; i < keysArr.length; i++){
+    map.set(keysArr[i], valuesArr[i]);  
+  }
+  return map;
+}
 
 const total = ref(0)
 const payerId = ref(1)
@@ -10,8 +20,12 @@ const itemNo = ref(1)
 const itemName = ref('')
 const itemCost = ref(0)
 const payersList = ref(new Array<payer>)
-const itemsList = ref(new Array<{ itemNo: String, itemName: String, cost: number, payers: Array<payer> } >)
+const itemsList = ref(new Array<item>)
+const percentMode = ref(false)
 
+function togglePercentMode() {
+  percentMode.value = !percentMode.value;
+}
 // function increment(x: number) {
 //   return x++
 // }
@@ -26,12 +40,19 @@ function clearList(list: Array<any>) {
 }
 
 function addPayer() {
-  payersList.value.push({ payerId: payerId.value.toString(), name: payerName.value, percent: 0, payment: 0 })
+  payersList.value.push({ payerId: payerId.value.toString(), name: payerName.value, percent: 0, payment: 0, items: payerItems.value })
   payerId.value++
   payerName.value = ''
   // look for a better way to achieve the same result; maybe using vue's next tick feature??
   if(payersList.value.length <= 1 || checkForChangedPercentages()) {
     updatePercentages()
+  }
+}
+
+function updatePayerItems(itemName: string) {
+  for(let payer of payersList.value) {
+    // payer.items.set(itemNum, true);
+    payer.items.push(itemName)
   }
 }
 
@@ -53,12 +74,18 @@ function updateTotal(newItem: number) {
 }
 
 function addItem() {
-  itemsList.value.push({ itemNo: itemNo.value.toString(), itemName: itemName.value, cost: itemCost.value, payers: payersList.value })
+  itemsList.value.push({ itemNo: itemNo.value, itemName: itemName.value, cost: itemCost.value })
   updateTotal(itemCost.value)
+  updatePayerItems(itemName.value)
   itemCost.value = 0
   itemName.value = ''
   itemNo.value++
 }
+
+// const includesItem = computed(() => {
+//   if(payersList.value[payerId - 1].items.get(itemNo)) return true
+//   else return false;
+// })
 
 function verifyPercentages(percentages: Array<number>): boolean {
   if (percentages.reduce((x, y) => x + y, 0) == 100) return true
@@ -99,7 +126,9 @@ function calculate() {
       </div>
     </div>
     <p class="text" >Items total: ${{ total.toFixed(2) }}</p>
-    <form action="submit" @submit.prevent="calculate">
+    <label for="percent-mode-switch">Percent Mode</label>
+    <input id="percent-mode-switch" type="checkbox" v-model="percentMode" @click="togglePercentMode">
+    <form v-if="percentMode" action="submit" @submit.prevent="calculate">
       <p class="text">Enter your percentages</p>
       <div v-if="payersList.length">
         <div v-for="payer in payersList" :key="'payer' + payer.payerId">
@@ -111,20 +140,21 @@ function calculate() {
       <button @click.prevent="clearList(payersList)">Clear list of payers</button>
     </form>
 
-    <form action="submit" @submit.prevent="">
+    <form v-else action="submit" @submit.prevent="">
       <h2>Items per person</h2>
       <div v-if="payersList.length && itemsList.length">
-        <div v-for="payer in payersList" :key="payer.name.toLowerCase() + payer.payerId">
-          {{ payer.name }}
-          <li v-for="item in itemsList" :key="item.itemName.toLowerCase() + item.itemNo">
-            {{ item.itemName }} 
-            <input type="checkbox">
+        <div v-for="item in itemsList" :key="item.itemName.toLowerCase() + item.itemNo">
+          {{ item.itemName }} 
+          <li v-for="payer in payersList" :key="payer.name.toLowerCase() + payer.payerId">
+            {{ payer.name }}
+            <label :for="payer.name + item.itemName">{{ payer.items.includes(item.itemName) }}</label>
+            <input :id="payer.name + item.itemName" :value="item.itemName" type="checkbox" v-model="payer.items">
           </li>
         </div>
       </div>
     </form>
 
-    <p class="text" v-for="payer in payersList" :key="'total' + payer.payerId">{{ payer.payerId }}: ${{ payer.payment.toFixed(2) }} </p>
+    <p class="text" v-for="payer in payersList" :key="'total' + payer.payerId">{{ payer.payerId }} - {{ payer.name }}: ${{ payer.payment.toFixed(2) }} </p>
   </div>
 </template>
 
