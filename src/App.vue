@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 
 export type payer = { payerId: string, name: string, percent: number, payment: number, items: Array<string> }
-export type item = { itemNo: number, itemName: string, cost: number, payers?: Array<payer> | null }
+export type item = { itemNo: number, itemName: string, cost: number, payers: Array<string> }
 
 const payerItems = ref(new Array)
 
@@ -74,7 +74,7 @@ function updateTotal(newItem: number) {
 }
 
 function addItem() {
-  itemsList.value.push({ itemNo: itemNo.value, itemName: itemName.value, cost: itemCost.value })
+  itemsList.value.push({ itemNo: itemNo.value, itemName: itemName.value, cost: itemCost.value, payers: payersList.value.map(payer => payer.name) })
   updateTotal(itemCost.value)
   updatePayerItems(itemName.value)
   itemCost.value = 0
@@ -147,8 +147,8 @@ function calculate() {
           {{ item.itemName }} 
           <li v-for="payer in payersList" :key="payer.name.toLowerCase() + payer.payerId">
             {{ payer.name }}
-            <label :for="payer.name + item.itemName">{{ payer.items.includes(item.itemName) }}</label>
-            <input :id="payer.name + item.itemName" :value="item.itemName" type="checkbox" v-model="payer.items">
+            <label :for="payer.name + item.itemName">{{ item.payers.includes(payer.name) }}</label>
+            <input :id="payer.name + item.itemName" :value="payer.name" type="checkbox" v-model="item.payers">
           </li>
         </div>
       </div>
