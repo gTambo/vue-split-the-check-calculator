@@ -1,18 +1,10 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 export type payer = { payerId: string, name: string, percent: number, payment: number, items: Array<string> }
 export type item = { itemNo: number, itemName: string, cost: number, payers: Array<string> }
 
 const payerItems = ref(new Array)
-
-function mapNewItems(map: Map<number, boolean>, keysArr: Array<any>, valuesArr: Array<any>) {
-  for(let i = 0; i < keysArr.length; i++){
-    map.set(keysArr[i], valuesArr[i]);  
-  }
-  return map;
-}
-
 const total = ref(0)
 const payerId = ref(1)
 const payerName = ref('')
@@ -26,9 +18,6 @@ const percentMode = ref(false)
 function togglePercentMode() {
   percentMode.value = !percentMode.value;
 }
-// function increment(x: number) {
-//   return x++
-// }
 
 function clearList(list: Array<any>) {
   if (list.length) {
@@ -43,7 +32,6 @@ function addPayer() {
   payersList.value.push({ payerId: payerId.value.toString(), name: payerName.value, percent: 0, payment: 0, items: payerItems.value })
   payerId.value++
   payerName.value = ''
-  // look for a better way to achieve the same result; maybe using vue's next tick feature??
   if(payersList.value.length <= 1 || checkForChangedPercentages()) {
     updatePercentages()
   }
@@ -81,11 +69,6 @@ function addItem() {
   itemName.value = ''
   itemNo.value++
 }
-
-// const includesItem = computed(() => {
-//   if(payersList.value[payerId - 1].items.get(itemNo)) return true
-//   else return false;
-// })
 
 function verifyPercentages(percentages: Array<number>): boolean {
   if (percentages.reduce((x, y) => x + y, 0) == 100) return true
