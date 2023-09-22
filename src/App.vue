@@ -28,6 +28,10 @@ function clearList(list: Array<any>) {
   }
 }
 
+function clearItems() {
+  itemsList.value = []
+}
+
 function addPayer() {
   payersList.value.push({ payerId: payerId.value.toString(), name: payerName.value, percent: 0, payment: 0, items: payerItems.value })
   payerId.value++
@@ -75,12 +79,36 @@ function verifyPercentages(percentages: Array<number>): boolean {
   return false
 }
 
-function calculate() {
+function calculateByPercentage() {
   if (verifyPercentages(payersList.value.map(payer => payer.percent))) {
     payersList.value.map(payer => (payer.payment = total.value * payer.percent / 100))
   }
   else { alert("percentages must total to 100") }
 
+}
+
+function calculateByItem() {
+  if(payersList.value.map(payer => payer.payment).reduce((a, b) => (a + b)) > 0) {
+    clearTotals()
+  }
+  for(let payer of payersList.value) {
+    console.log(`checking items for payer${payer.name}`)
+    for(let item of itemsList.value) {
+      const payerMatch = item.payers.includes(payer.name)
+      console.log(`found item ${item.itemName}`)
+      if(payerMatch && item.payers.length) {
+        payer.payment += (item.cost / item.payers.length)
+        console.log(`added ${item.cost / item.payers.length} to total payment`);
+      }
+      console.log(`total payment for ${payer.name} is ${payer.payment}`)
+    }
+  }
+}
+
+function clearTotals() {
+  for(let payer of payersList.value) {
+    payer.payment = 0
+  }
 }
 
 
@@ -111,7 +139,7 @@ function calculate() {
     <p class="text" >Items total: ${{ total.toFixed(2) }}</p>
     <label for="percent-mode-switch">Percent Mode</label>
     <input id="percent-mode-switch" type="checkbox" v-model="percentMode" @click="togglePercentMode">
-    <form v-if="percentMode" action="submit" @submit.prevent="calculate">
+    <form v-if="percentMode" action="submit" @submit.prevent="calculateByPercentage">
       <p class="text">Enter your percentages</p>
       <div v-if="payersList.length">
         <div v-for="payer in payersList" :key="'payer' + payer.payerId">
@@ -120,10 +148,9 @@ function calculate() {
         </div>
       </div>
       <button type="submit">Calculate totals</button>
-      <button @click.prevent="clearList(payersList)">Clear list of payers</button>
     </form>
 
-    <form v-else action="submit" @submit.prevent="">
+    <form v-else action="submit" @submit.prevent="calculateByItem">
       <h2>Items per person</h2>
       <div v-if="payersList.length && itemsList.length">
         <div v-for="item in itemsList" :key="item.itemName.toLowerCase() + item.itemNo">
@@ -135,7 +162,12 @@ function calculate() {
           </li>
         </div>
       </div>
+      <button type="submit">Calculate totals</button>
     </form>
+
+    <button @click.prevent="clearList(payersList)">Clear list of payers</button>
+    <button @click.prevent="clearItems">Clear list of items</button>
+    <button @click.prevent="clearTotals">Clear totals</button>
 
     <p class="text" v-for="payer in payersList" :key="'total' + payer.payerId">{{ payer.payerId }} - {{ payer.name }}: ${{ payer.payment.toFixed(2) }} </p>
   </div>
