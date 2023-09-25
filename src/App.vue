@@ -130,10 +130,12 @@ function clearTotals() {
       $<input v-model="itemCost" id="item-cost" type="number" min=".01" step=".01" max="1000000" onfocus="this.value=''" >
       <button type="submit">Add Item</button>
     </form>
-    <div class="item-list" v-if="itemsList.length">
-      <div v-for="item in itemsList" :key="'item' + item.itemNo">
-        
-        <p><span class="list-item-numbers">{{ (item.itemNo).toString() }}</span> {{ item.itemName }} --- ${{ item.cost }}</p>
+    <div class="item-list">
+      <h2>Items</h2>
+      <div v-if="itemsList.length">
+        <div v-for="item in itemsList" :key="'item' + item.itemNo">
+          <p><span class="list-item-numbers">{{ (item.itemNo).toString() }}</span> {{ item.itemName }} --- ${{ item.cost }}</p>
+        </div>
       </div>
     </div>
     <p class="text" >Items total: ${{ total.toFixed(2) }}</p>
@@ -152,12 +154,11 @@ function clearTotals() {
 
     <form v-else action="submit" @submit.prevent="calculateByItem">
       <h2>Items per person</h2>
-      <div v-if="payersList.length && itemsList.length">
+      <div v-if="payersList.length && itemsList.length" class="items-per-person-wrapper">
         <div v-for="item in itemsList" :key="item.itemName.toLowerCase() + item.itemNo">
-          {{ item.itemName }} 
+          <p class="item-name">{{ item.itemName }}</p>
           <li v-for="payer in payersList" :key="payer.name.toLowerCase() + payer.payerId">
-            {{ payer.name }}
-            <label :for="payer.name + item.itemName">{{ item.payers.includes(payer.name) }}</label>
+            <label :for="payer.name + item.itemName">{{ payer.name }}</label>
             <input :id="payer.name + item.itemName" :value="payer.name" type="checkbox" v-model="item.payers">
           </li>
         </div>
@@ -183,6 +184,14 @@ function clearTotals() {
 
 .item-list{
   text-align: left;
+  min-height: 10vw;
+}
+
+.items-per-person-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-bottom: 1vw;
 }
 .list-item-numbers  {
   font-family: 'Courier New', Courier, monospace;
@@ -195,10 +204,27 @@ function clearTotals() {
   border-radius: 10%;
 }
 
+.item-name {
+  font-size: large;
+  /* text-decoration: underline; */
+  border: 1px solid;
+  border-radius: 8px;
+}
+
 input {
   margin: 0.2rem 0.5rem;
+  padding: .5rem;
+  border: none;
+  border-radius: 8px;
 }
+
+
+
 button {
   margin: 0.2rem;
+  padding: 0.5rem;
+  background-color: aquamarine;
+  border: none;
+  border-radius: 8px;
 }
 </style>
