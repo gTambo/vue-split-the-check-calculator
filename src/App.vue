@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-export type payer = { payerId: string, name: string, percent: number, payment: number, items: Array<string> }
-export type item = { itemNo: number, itemName: string, cost: number, payers: Array<string> }
-
+import type { payer, item } from "./constants/typealiases"
+ 
 const payerItems = ref(new Array)
 const total = ref(0)
 const payerId = ref(1)
@@ -117,7 +116,7 @@ function clearTotals() {
 <template>
   <div>
     <h1>Payment Calculator</h1>
-
+    
     <form action="submit" @submit.prevent="addPayer">
       <label for="payers">Name: </label>
       <input v-model="payerName" id="payers" type="text" placeholder="payer">

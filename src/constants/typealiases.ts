@@ -1,0 +1,2 @@
+export type payer = { payerId: string, name: string, percent: number, payment: number, items: Array<string> }
+export type item = { itemNo: number, itemName: string, cost: number, payers: Array<string> }
