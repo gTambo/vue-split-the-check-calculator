@@ -4,6 +4,27 @@
   display: flex;
   place-items: center;
 } */
+.text {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: 900;
+  font-size: 35px;
+  font-style: oblique;
+}
+
+input {
+  margin: 0.2rem 0.5rem;
+  padding: .5rem;
+  border: none;
+  border-radius: 8px;
+}
+
+button {
+  margin: 0.2rem;
+  padding: 0.5rem;
+  background-color: aquamarine;
+  border: none;
+  border-radius: 8px;
+}
 
 #app {
   max-width: 1280px;
