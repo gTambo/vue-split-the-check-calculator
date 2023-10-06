@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import type Button from 'primevue/button';
 import type { payer, item } from "../../constants/typealiases"
  
 const payerItems = ref(new Array)
@@ -113,14 +114,14 @@ function clearTotals() {
     <form action="submit" @submit.prevent="addPayer">
       <label for="payers">Name: </label>
       <input v-model="payerName" id="payers" type="text" placeholder="payer">
-      <button type="submit">Set as Payer</button>
+      <Button type="submit">Set as Payer</Button>
     </form>
     <form action="submit" @submit.prevent="addItem">
       <label for="item-name">Enter an item: </label>
       <input v-model="itemName" id="item-name" type="text" placeholder="chips" >
       <label for="item-cost">Item cost: </label>
       $<input v-model="itemCost" id="item-cost" type="number" min=".01" step=".01" max="1000000" onfocus="this.value=''" >
-      <button type="submit">Add Item</button>
+      <Button type="submit">Add Item</Button>
     </form>
     <div class="item-list">
       <h2>Items</h2>
@@ -142,7 +143,7 @@ function clearTotals() {
           <input v-model="payer.percent" :id="'percent' + payer.payerId" type="number" min="0.01" max="100" step=".01" onfocus="this.value=''" />%
         </div>
       </div>
-      <button type="submit">Calculate totals</button>
+      <Button type="submit">Calculate totals</Button>
     </form>
 
     <form v-else action="submit" @submit.prevent="calculateByItem">
@@ -156,12 +157,12 @@ function clearTotals() {
           </li>
         </div>
       </div>
-      <button type="submit">Calculate totals</button>
+      <Button type="submit">Calculate totals</Button>
     </form>
 
-    <button @click.prevent="clearList(payersList)">Clear list of payers</button>
-    <button @click.prevent="clearItems">Clear list of items</button>
-    <button @click.prevent="clearTotals">Clear totals</button>
+    <Button @click.prevent="clearList(payersList)">Clear list of payers</Button>
+    <Button @click.prevent="clearItems">Clear list of items</Button>
+    <Button @click.prevent="clearTotals">Clear totals</Button>
 
     <p class="text" v-for="payer in payersList" :key="'total' + payer.payerId">{{ payer.payerId }} - {{ payer.name }}: ${{ payer.payment.toFixed(2) }} </p>
   </div>
