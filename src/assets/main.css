@@ -5,10 +5,10 @@
   place-items: center;
 } */
 .text {
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  font-weight: 900;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: 700;
   font-size: 35px;
-  font-style: oblique;
+  font-style: normal;
 }
 
 input {
@@ -20,10 +20,10 @@ input {
 
 button {
   margin: 0.2rem;
-  padding: 0.5rem;
-  background-color: aquamarine;
-  border: none;
-  border-radius: 8px;
+  /* padding: 0.5rem; */
+  /* background-color: aquamarine; */
+  /* border: none; */
+  /* border-radius: 8px; */
 }
 
 #app {
