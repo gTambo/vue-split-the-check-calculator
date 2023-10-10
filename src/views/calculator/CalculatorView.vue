@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import type Button from 'primevue/button';
 import type { payer, item } from "../../constants/typealiases"
  
 const payerItems = ref(new Array)
@@ -113,14 +112,14 @@ function clearTotals() {
     
     <form action="submit" @submit.prevent="addPayer">
       <label for="payers">Name: </label>
-      <input v-model="payerName" id="payers" type="text" placeholder="payer">
+      <InputText v-model="payerName" id="payers" type="text" placeholder="payer" />
       <Button type="submit">Set as Payer</Button>
     </form>
     <form action="submit" @submit.prevent="addItem">
       <label for="item-name">Enter an item: </label>
-      <input v-model="itemName" id="item-name" type="text" placeholder="chips" >
+      <InputText v-model="itemName" id="item-name" type="text" placeholder="chips"  />
       <label for="item-cost">Item cost: </label>
-      $<input v-model="itemCost" id="item-cost" type="number" min=".01" step=".01" max="1000000" onfocus="this.value=''" >
+      $<InputText v-model="itemCost" id="item-cost" type="number" min=".01" step=".01" max="1000000" onfocus="this.value=''"  />
       <Button type="submit">Add Item</Button>
     </form>
     <div class="item-list">
@@ -133,14 +132,14 @@ function clearTotals() {
     </div>
     <p class="text" >Items total: ${{ total.toFixed(2) }}</p>
     <label for="percent-mode-switch">Percent Mode</label>
-    <input id="percent-mode-switch" type="checkbox" v-model="percentMode" @click="togglePercentMode">
+    <InputText id="percent-mode-switch" type="checkbox" v-model="percentMode" @click="togglePercentMode" />
     
     <form v-if="percentMode" action="submit" @submit.prevent="calculateByPercentage">
       <p class="text">Enter your percentages</p>
       <div v-if="payersList.length">
         <div v-for="payer in payersList" :key="'payer' + payer.payerId">
           <label :for="'percent' + payer.payerId">{{ payer.name }}: </label>
-          <input v-model="payer.percent" :id="'percent' + payer.payerId" type="number" min="0.01" max="100" step=".01" onfocus="this.value=''" />%
+          <InputText v-model="payer.percent" :id="'percent' + payer.payerId" type="number" min="0.01" max="100" step=".01" onfocus="this.value=''" /> /%
         </div>
       </div>
       <Button type="submit">Calculate totals</Button>
@@ -153,7 +152,7 @@ function clearTotals() {
           <p class="item-name">{{ item.itemName }}</p>
           <li v-for="payer in payersList" :key="payer.name.toLowerCase() + payer.payerId">
             <label :for="payer.name + item.itemName">{{ payer.name }}</label>
-            <input :id="payer.name + item.itemName" :value="payer.name" type="checkbox" v-model="item.payers">
+            <InputText :id="payer.name + item.itemName" :value="payer.name" type="checkbox" v-model="item.payers" />
           </li>
         </div>
       </div>
