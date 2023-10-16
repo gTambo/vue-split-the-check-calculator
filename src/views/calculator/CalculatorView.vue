@@ -33,19 +33,28 @@ function clearItems() {
 
 function addPayer() {
   payersList.value.push({ payerId: payerId.value.toString(), name: payerName.value, percent: 0, payment: 0, items: payerItems.value })
+  if(itemsList.value.length) {
+    updateItemPayers(payerName.value)
+  }
   payerId.value++
   payerName.value = ''
   if(payersList.value.length <= 1 || checkForChangedPercentages()) {
     updatePercentages()
   }
+
 }
 
-function updatePayerItems(itemName: string) {
-  for(let payer of payersList.value) {
-    // payer.items.set(itemNum, true);
-    payer.items.push(itemName)
+function updateItemPayers(payerName: string) {
+  for(let itm of itemsList.value) {
+    itm.payers.push(payerName)
   }
 }
+
+// function updatePayerItems(itemName: string) {
+//   for(let payer of payersList.value) {
+//     payer.items.push(itemName)
+//   }
+// }
 
 function checkForChangedPercentages(): boolean {
   const currentMeanPercentage = 1 / (payersList.value.length - 1) * 100 // comparing against payer list prior to most recent addition
@@ -65,7 +74,7 @@ function updateTotal(newItem: number) {
 function addItem() {
   itemsList.value.push({ itemNo: itemNo.value, itemName: itemName.value, cost: itemCost.value, payers: payersList.value.map(payer => payer.name) })
   updateTotal(itemCost.value)
-  updatePayerItems(itemName.value)
+  // updatePayerItems(itemName.value)
   itemCost.value = 0
   itemName.value = ''
   itemNo.value++
@@ -120,7 +129,7 @@ function clearTotals() {
       <InputText v-model="itemName" id="item-name" type="text" placeholder="chips"  />
       <label for="item-cost">Item cost: </label>
       $<InputNumber v-model="itemCost" id="item-cost" inputId="currency-us" mode="currency" currency="USD" locale="en-US" onfocus="this.value=''"  />
-      <Button type="submit">Add Item</Button>
+      <Button type="submit" >Add Item</Button>
     </form>
     <div class="item-list">
       <h2>Items</h2>
